@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mécatronique ISET Sousse</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<div class="stars"></div>
+<div class="grid-bg"></div>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="logo-area" onclick="showHome()">
+
+        <div class="logo-gear">
+            ⚙
+        </div>
+
+        <div class="logo-text">
+            <span>Mécatronique</span>
+            <strong>ISET SOUSSE</strong>
+        </div>
+
+    </div>
+
+
+    <nav>
+
+        <a href="#" onclick="showHome()" data-fr="Accueil" data-ar="الرئيسية">
+            Accueil
+        </a>
+
+        <a href="#programmes"
+           onclick="showSection('programmes')"
+           data-fr="Programmes"
+           data-ar="البرامج">
+            Programmes
+        </a>
+
+       
+
+        <a href="#cartes"
+           onclick="showSection('cartes')"
+           data-fr="Cartes"
+           data-ar="البطاقات">
+            Cartes
+        </a>
+
+        <a href="#cours"
+           onclick="showSection('cours')"
+           data-fr="Cours"
+           data-ar="الدروس">
+            Cours
+        </a>
+
+        <a href="#apropos"
+           onclick="showSection('apropos')"
+           data-fr="À propos"
+           data-ar="حول الموقع">
+            À propos
+        </a>
+
+    </nav>
+
+
+    <div class="nav-right">
+
+        <div class="language-switch">
+
+            <button id="frBtn"
+                    class="lang active"
+                    onclick="setLanguage('fr')">
+                FR
+            </button>
+
+            <button id="arBtn"
+                    class="lang"
+                    onclick="setLanguage('ar')">
+                AR
+            </button>
+
+        </div>
+
+
+        <button class="student-btn" onclick="openStudentForm()">
+
+            <span>🎓</span>
+
+            <span
+                data-fr="Espace étudiant"
+                data-ar="فضاء الطالب">
+                Espace étudiant
+            </span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<main id="homePage">
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="small-title">
+
+            <span>⚙</span>
+
+            <span
+                data-fr="LABORATOIRE DE MÉCATRONIQUE"
+                data-ar="مخبر الميكاترونيك">
+                LABORATOIRE DE MÉCATRONIQUE
+            </span>
+
+        </div>
+
+
+        <h1>
+
+            <span>Mécatronique</span>
+
+            <strong>ISET SOUSSE</strong>
+
+        </h1>
+
+
+        <div class="hero-subtitle">
+
+            <span data-fr="Robotique" data-ar="الروبوتات">
+                Robotique
+            </span>
+
+            • 
+
+            <span data-fr="Programmation" data-ar="البرمجة">
+                Programmation
+            </span>
+
+            • 
+
+            <span data-fr="Mécatronique" data-ar="الميكاترونيك">
+                Mécatronique
+            </span>
+
+        </div>
+
+
+        <p
+            data-fr="Apprenez, programmez et construisez vos propres systèmes mécatroniques."
+            data-ar="تعلّم، برمج وابنِ أنظمتك الميكاترونية الخاصة بك.">
+            Apprenez, programmez et construisez vos propres systèmes mécatroniques.
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <button class="main-button"
+                    onclick="openStudentForm()">
+
+                🎓
+
+                <span
+                    data-fr="Espace étudiant"
+                    data-ar="فضاء الطالب">
+                    Espace étudiant
+                </span>
+
+            </button>
+
+
+            <button class="outline-button"
+                    onclick="openStudentForm()">
+
+                🚀
+
+                <span
+                    data-fr="Découvrir les projets"
+                    data-ar="اكتشف المشاريع">
+                    Découvrir les projets
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROBOT VISUAL -->
+
+    <div class="hero-visual">
+
+        <div class="giant-gear">⚙</div>
+
+        <div class="robot-arm">
+
+            <div class="arm-part arm-one"></div>
+            <div class="arm-joint joint-one"></div>
+
+            <div class="arm-part arm-two"></div>
+            <div class="arm-joint joint-two"></div>
+
+            <div class="arm-part arm-three"></div>
+            <div class="arm-joint joint-three"></div>
+
+            <div class="robot-hand">
+                ◢
+            </div>
+
+        </div>
+
+        <div class="energy-ring"></div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HOME CARDS
+===================================================== -->
+
+<section class="home-cards">
+
+    <div class="home-card">
+
+        <div class="home-card-image programming-image">
+            &lt;/&gt;
+        </div>
+
+        <div class="card-icon">
+            &lt;/&gt;
+        </div>
+
+        <h2
+            data-fr="Programmes"
+            data-ar="البرامج">
+            Programmes
+        </h2>
+
+        <p
+            data-fr="Découvrez les domaines que vous pouvez apprendre."
+            data-ar="اكتشف المجالات التي يمكنك تعلمها.">
+            Découvrez les domaines que vous pouvez apprendre.
+        </p>
+
+        <button onclick="showSection('programmes')">
+
+            <span
+                data-fr="Voir les détails"
+                data-ar="عرض التفاصيل">
+                Voir les détails
+            </span>
+
+            →
+        </button>
+
+    </div>
+
+
+
+    <div class="home-card">
+
+        <div class="home-card-image car-image">
+            🤖
+        </div>
+
+        <div class="card-icon">
+            🚀
+        </div>
+
+        <h2
+            data-fr="Projets"
+            data-ar="المشاريع">
+            Projets
+        </h2>
+
+        <p
+            data-fr="Construisez des projets réels étape par étape."
+            data-ar="أنجز مشاريع حقيقية خطوة بخطوة.">
+            Construisez des projets réels étape par étape.
+        </p>
+
+        <button onclick="openStudentForm()">
+
+            <span
+                data-fr="Voir les détails"
+                data-ar="عرض التفاصيل">
+                Voir les détails
+            </span>
+
+            →
+        </button>
+
+    </div>
+
+
+
+    <div class="home-card">
+
+        <div class="home-card-image board-image">
+            Arduino
+        </div>
+
+        <div class="card-icon">
+            ⚙
+        </div>
+
+        <h2
+            data-fr="Cartes"
+            data-ar="البطاقات">
+            Cartes
+        </h2>
+
+        <p
+            data-fr="Apprenez à utiliser les cartes programmables."
+            data-ar="تعلم كيفية استعمال البطاقات القابلة للبرمجة.">
+            Apprenez à utiliser les cartes programmables.
+        </p>
+
+        <button onclick="showSection('cartes')">
+
+            <span
+                data-fr="Voir les détails"
+                data-ar="عرض التفاصيل">
+                Voir les détails
+            </span>
+
+            →
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<!-- =====================================================
+     STUDENT FORM
+===================================================== -->
+
+<div id="studentModal" class="modal">
+
+    <div class="modal-box">
+
+        <button class="close-btn" onclick="closeStudentForm()">
+            ×
+        </button>
+
+        <div class="modal-icon">
+            🎓
+        </div>
+
+        <h2
+            data-fr="Espace étudiant"
+            data-ar="فضاء الطالب">
+            Espace étudiant
+        </h2>
+
+        <p
+            data-fr="Inscrivez-vous pour accéder aux 11 projets, aux étapes de fabrication et aux ressources pédagogiques."
+            data-ar="سجّل للدخول إلى المشاريع الـ11 ومراحل الإنجاز والموارد التعليمية.">
+            Inscrivez-vous pour accéder aux 11 projets, aux étapes de fabrication et aux ressources pédagogiques.
+        </p>
+
+
+        <form id="studentForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label
+                        data-fr="Nom"
+                        data-ar="اللقب">
+                        Nom
+                    </label>
+
+                    <input
+                        id="nom"
+                        type="text"
+                        placeholder="Votre nom"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        data-fr="Prénom"
+                        data-ar="الاسم">
+                        Prénom
+                    </label>
+
+                    <input
+                        id="prenom"
+                        type="text"
+                        placeholder="Votre prénom"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        data-fr="Email ou téléphone"
+                        data-ar="البريد الإلكتروني أو الهاتف">
+                        Email ou téléphone
+                    </label>
+
+                    <input
+                        id="contact"
+                        type="text"
+                        placeholder="exemple@domain.com"
+                        required>
+
+                </div>
+
+<div class="form-group">
+    <label for="password">Mot de passe</label>
+
+    <input
+        type="password"
+        id="password"
+        placeholder="Votre mot de passe"
+        required
+    >
+</div>
+                <div class="form-group">
+
+                    <label
+                        data-fr="Niveau scolaire"
+                        data-ar="المستوى الدراسي">
+                        Niveau scolaire
+                    </label>
+
+                    <select id="niveau" required>
+
+                        <option value=""
+                                data-fr="Choisir..."
+                                data-ar="اختر...">
+                            Choisir...
+                        </option>
+
+                        <option value="1"
+                                data-fr="1ère année"
+                                data-ar="السنة الأولى">
+                            1ère année
+                        </option>
+
+                        <option value="2"
+                                data-fr="2ème année"
+                                data-ar="السنة الثانية">
+                            2ème année
+                        </option>
+
+                        <option value="3"
+                                data-fr="3ème année"
+                                data-ar="السنة الثالثة">
+                            3ème année
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button class="submit-btn" type="submit">
+
+                ➜
+
+                <span
+                    data-fr="Accéder aux projets"
+                    data-ar="الدخول إلى المشاريع">
+                    Accéder aux projets
+                </span>
+
+            </button>
+<div style="text-align:center; margin-top:20px;">
+    <button
+        type="button"
+        onclick="openLoginForm()"
+        style="
+            background:none;
+            border:none;
+            color:#6ea8ff;
+            cursor:pointer;
+            font-size:15px;
+        "
+    >
+        <span data-fr="J'ai déjà un compte — Se connecter"
+              data-ar="لدي حساب بالفعل — تسجيل الدخول">
+            J'ai déjà un compte — Se connecter
+        </span>
+    </button>
+</div>
+
+        </form>
+<form id="studentForm">
+    ...
+</form>
+
+</div>
+</div>
+
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+
+    <div class="modal-box">
+
+        <button class="close-btn" onclick="closeLoginForm()">×</button>
+
+        <div class="modal-icon">🔐</div>
+
+        <h2
+            data-fr="Connexion"
+            data-ar="تسجيل الدخول">
+            Connexion
+        </h2>
+
+        <p
+            data-fr="Connectez-vous à votre compte étudiant."
+            data-ar="قم بتسجيل الدخول إلى حسابك الطلابي.">
+            Connectez-vous à votre compte étudiant.
+        </p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label
+                    data-fr="Email"
+                    data-ar="البريد الإلكتروني">
+                    Email
+                </label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="exemple@domain.com"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label
+                    data-fr="Mot de passe"
+                    data-ar="كلمة المرور">
+                    Mot de passe
+                </label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Votre mot de passe"
+                    required>
+            </div>
+
+            <button class="submit-btn" type="submit">
+                🔓
+                <span
+                    data-fr="Se connecter"
+                    data-ar="تسجيل الدخول">
+                    Se connecter
+                </span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div><form id="studentForm">
+    ...
+</form>
+
+</div>
+</div>
+
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+
+    <div class="modal-box">
+
+        <button class="close-btn" onclick="closeLoginForm()">×</button>
+
+        <div class="modal-icon">🔐</div>
+
+        <h2
+            data-fr="Connexion"
+            data-ar="تسجيل الدخول">
+            Connexion
+        </h2>
+
+        <p
+            data-fr="Connectez-vous à votre compte étudiant."
+            data-ar="قم بتسجيل الدخول إلى حسابك الطلابي.">
+            Connectez-vous à votre compte étudiant.
+        </p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label
+                    data-fr="Email"
+                    data-ar="البريد الإلكتروني">
+                    Email
+                </label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="exemple@domain.com"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label
+                    data-fr="Mot de passe"
+                    data-ar="كلمة المرور">
+                    Mot de passe
+                </label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Votre mot de passe"
+                    required>
+            </div>
+
+            <button class="submit-btn" type="submit">
+                🔓
+                <span
+                    data-fr="Se connecter"
+                    data-ar="تسجيل الدخول">
+                    Se connecter
+                </span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     PROJECTS PAGE
+===================================================== -->
+
+<section id="projectsPage" class="projects-page">
+
+    <div class="projects-header">
+
+        <div>
+
+            <div class="small-title">
+
+                ⚗
+
+                <span
+                    data-fr="LABORATOIRE DE MÉCATRONIQUE"
+                    data-ar="مخبر الميكاترونيك">
+                    LABORATOIRE DE MÉCATRONIQUE
+                </span>
+
+            </div>
+
+
+            <h1>
+
+                <strong>11</strong>
+
+                <span
+                    data-fr="projets pratiques"
+                    data-ar="مشروعًا تطبيقيًا">
+                    projets pratiques
+                </span>
+
+            </h1>
+
+
+            <p
+                data-fr="Choisissez un projet pour voir l'objectif, le matériel, le câblage, la programmation et les étapes."
+                data-ar="اختر مشروعًا للاطلاع على الهدف، المعدات، التوصيلات، البرمجة ومراحل الإنجاز.">
+                Choisissez un projet pour voir l'objectif, le matériel, le câblage, la programmation et les étapes.
+            </p>
+
+        </div>
+
+
+        <div class="projects-header-art">
+
+            <div class="mechanical-arm">
+                🦾
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         11 PROJECTS
+    ================================================== -->
+
+    <div id="projectsGrid" class="projects-grid"></div>
+
+</section>
+
+
+
+<!-- =====================================================
+     OTHER SECTIONS
+===================================================== -->
+
+<section id="programmes" class="info-section">
+
+    <h1
+        data-fr="Programmes"
+        data-ar="البرامج">
+        Programmes
+    </h1>
+
+    <div class="info-content">
+
+        <div>
+            🤖
+            <h2
+                data-fr="Robotique"
+                data-ar="الروبوتات">
+                Robotique
+            </h2>
+
+            <p
+                data-fr="Conception et programmation de robots intelligents."
+                data-ar="تصميم وبرمجة الروبوتات الذكية.">
+                Conception et programmation de robots intelligents.
+            </p>
+        </div>
+
+
+        <div>
+            💻
+            <h2
+                data-fr="Programmation"
+                data-ar="البرمجة">
+                Programmation
+            </h2>
+
+            <p
+                data-fr="Algorithmique, Python, Arduino et systèmes embarqués."
+                data-ar="الخوارزميات، Python، Arduino والأنظمة المدمجة.">
+                Algorithmique, Python, Arduino et systèmes embarqués.
+            </p>
+        </div>
+
+
+        <div>
+            ⚙
+            <h2
+                data-fr="Mécatronique"
+                data-ar="الميكاترونيك">
+                Mécatronique
+            </h2>
+
+            <p
+                data-fr="Électronique, mécanique, automatisme et informatique."
+                data-ar="الإلكترونيات، الميكانيك، الأتمتة والإعلامية."
+            >
+                Électronique, mécanique, automatisme et informatique.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<section id="cartes" class="info-section">
+
+    <h1
+        data-fr="Cartes programmables"
+        data-ar="البطاقات القابلة للبرمجة">
+        Cartes programmables
+    </h1>
+
+    <div class="info-content">
+
+        <div>
+            <div class="big-icon">Arduino</div>
+
+            <h2>Arduino UNO</h2>
+
+            <p
+                data-fr="Carte idéale pour débuter en robotique et électronique."
+                data-ar="بطاقة مثالية للمبتدئين في الروبوتات والإلكترونيات.">
+                Carte idéale pour débuter en robotique et électronique.
+            </p>
+        </div>
+
+
+        <div>
+
+            <div class="big-icon">ESP32</div>
+
+            <h2>ESP32</h2>
+
+            <p
+                data-fr="Carte avec Wi-Fi et Bluetooth pour les projets intelligents."
+                data-ar="بطاقة تحتوي على Wi-Fi وBluetooth للمشاريع الذكية.">
+                Carte avec Wi-Fi et Bluetooth pour les projets intelligents.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<section id="cours" class="info-section">
+
+    <h1
+        data-fr="Cours"
+        data-ar="الدروس">
+        Cours
+    </h1>
+
+    <p
+        data-fr="Cours de robotique, programmation, électronique et mécatronique."
+        data-ar="دروس في الروبوتات، البرمجة، الإلكترونيات والميكاترونيك.">
+        Cours de robotique, programmation, électronique et mécatronique.
+    </p>
+
+</section>
+
+
+
+<section id="apropos" class="info-section">
+
+    <h1
+        data-fr="À propos"
+        data-ar="حول الموقع">
+        À propos
+    </h1>
+
+    <p
+        data-fr="Plateforme pédagogique dédiée aux étudiants de Mécatronique de l'ISET Sousse."
+        data-ar="منصة تعليمية مخصصة لطلبة الميكاترونيك بالمعهد العالي للدراسات التكنولوجية بسوسة.">
+        Plateforme pédagogique dédiée aux étudiants de Mécatronique de l'ISET Sousse.
+    </p>
+
+</section>
+
+
+
+<!-- =====================================================
+     PROJECT DETAILS MODAL
+===================================================== -->
+
+<div id="projectModal" class="project-modal">
+
+    <div class="project-detail-box">
+
+        <button class="close-btn"
+                onclick="closeProjectDetails()">
+            ×
+        </button>
+
+        <div id="projectDetails"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <strong>
+        Mécatronique <span>ISET Sousse</span>
+    </strong>
+
+    <span>•</span>
+
+    <span
+        data-fr="Robotique"
+        data-ar="الروبوتات">
+        Robotique
+    </span>
+
+    <span>•</span>
+
+    <span
+        data-fr="Programmation"
+        data-ar="البرمجة">
+        Programmation
+    </span>
+
+    <span>•</span>
+
+    <span
+        data-fr="Mécatronique"
+        data-ar="الميكاترونيك">
+        Mécatronique
+    </span>
+
+    <small>
+        © 2026 Mécatronique ISET Sousse
+    </small>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
