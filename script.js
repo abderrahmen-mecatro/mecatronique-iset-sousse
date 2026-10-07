@@ -4577,125 +4577,193 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("studentForm");
 
-    form.addEventListener("submit", async function (event) {
+    if (form) {
 
-        event.preventDefault();
+        form.addEventListener("submit", async function (event) {
 
-        const nom =
-            document.getElementById("nom").value.trim();
+            event.preventDefault();
 
-        const prenom =
-            document.getElementById("prenom").value.trim();
+            const nom =
+                document.getElementById("nom").value.trim();
 
-        const contact =
-            document.getElementById("contact").value.trim();
+            const prenom =
+                document.getElementById("prenom").value.trim();
 
-        const niveau =
-            document.getElementById("niveau").value;
-        const password =
-             document.getElementById("password").value
+            const contact =
+                document.getElementById("contact").value.trim();
 
-        if (!nom || !prenom || !contact || !password || !niveau) {
+            const password =
+                document.getElementById("password").value;
 
-            alert(
-                currentLanguage === "fr"
-                    ? "Veuillez remplir tous les champs."
-                    : "يرجى تعمير جميع الخانات."
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+
+            /* Vérification des champs */
+
+            if (
+                !nom ||
+                !prenom ||
+                !contact ||
+                !password ||
+                !confirmPassword
+            ) {
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Veuillez remplir tous les champs."
+                        : "يرجى تعمير جميع الخانات."
+                );
+
+                return;
+            }
+
+
+            /* Vérification des mots de passe */
+
+            if (password !== confirmPassword) {
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Les mots de passe ne correspondent pas."
+                        : "كلمتا المرور غير متطابقتين."
+                );
+
+                return;
+            }
+
+
+            /* Vérification email */
+
+            if (!contact.includes("@")) {
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Veuillez entrer une adresse email valide."
+                        : "يرجى إدخال بريد إلكتروني صحيح."
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               CRÉATION DU COMPTE SUPABASE AUTH
+            ================================================= */
+
+            const { data: authData, error: authError } =
+                await supabaseClient.auth.signUp({
+                    email: contact,
+                    password: password
+                });
+
+
+            if (authError) {
+
+                console.error(
+                    "Auth error:",
+                    authError
+                );
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Erreur lors de la création du compte : " +
+                          authError.message
+                        : "حدث خطأ أثناء إنشاء الحساب: " +
+                          authError.message
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               ENVOI DE LA DEMANDE
+            ================================================= */
+
+            const { data, error } =
+                await supabaseClient.rpc(
+                    "submit_student_request",
+                    {
+                        p_nom: nom,
+                        p_prenom: prenom,
+                        p_contact: contact
+                    }
+                );
+
+
+            if (error) {
+
+                console.error(
+                    "Supabase error:",
+                    error
+                );
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Erreur lors de l'envoi de votre demande : " +
+                          error.message
+                        : "حدث خطأ أثناء إرسال طلبك."
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               SAUVEGARDER LES INFORMATIONS
+            ================================================= */
+
+            const student = {
+                nom: nom,
+                prenom: prenom,
+                contact: contact,
+                date: new Date().toISOString()
+            };
+
+
+            localStorage.setItem(
+                "student",
+                JSON.stringify(student)
             );
 
-            return;
-        }
-/* إنشاء حساب الطالب في Supabase Auth */
 
-const { data: authData, error: authError } =
-    await supabaseClient.auth.signUp({
-        email: contact,
-        password: password
-    });
+            /* =================================================
+               SAUVEGARDER LE TOKEN
+            ================================================= */
 
-if (authError) {
-
-    console.error("Auth error:", authError);
-
-    alert(
-        currentLanguage === "fr"
-            ? "Erreur lors de la création du compte : " + authError.message
-            : "حدث خطأ أثناء إنشاء الحساب: " + authError.message
-    );
-
-    return;
-}
-
-        /* إرسال الطلب إلى Supabase */
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "submit_student_request",
-                {
-                    p_nom: nom,
-                    p_prenom: prenom,
-                    p_contact: contact,
-                    p_niveau: niveau
-                }
+            localStorage.setItem(
+                REQUEST_TOKEN_KEY,
+                data
             );
 
 
-        if (error) {
+            /* =================================================
+               PROJETS BLOQUÉS
+            ================================================= */
 
-            console.error("Supabase error:", error);
-
-            alert(
-                currentLanguage === "fr"
-                    ? "Erreur lors de l'envoi de votre demande."
-                    : "حدث خطأ أثناء إرسال طلبك."
-            );
-
-            return;
-        }
+            projectsAuthorized = false;
 
 
-        /* حفظ معلومات الطالب */
+            /* =================================================
+               FERMER LE FORMULAIRE
+            ================================================= */
 
-        const student = {
-            nom,
-            prenom,
-            contact,
-            niveau,
-            date: new Date().toISOString()
-        };
+            closeStudentForm();
 
 
-        localStorage.setItem(
-            "student",
-            JSON.stringify(student)
-        );
+            /* =================================================
+               MESSAGE D'ATTENTE
+            ================================================= */
 
+            showProjectWaitingMessage();
 
-        /* حفظ رمز الطلب */
+        });
 
-        localStorage.setItem(
-            REQUEST_TOKEN_KEY,
-            data
-        );
-
-
-        /* المشاريع تبقى مغلقة */
-
-        projectsAuthorized = false;
-
-
-        /* إغلاق الفورم */
-
-        closeStudentForm();
-
-
-        /* إظهار رسالة الانتظار */
-
-        showProjectWaitingMessage();
-
-    });
+    }
 
 });
+
 
 /* =====================================================
    STUDENT FORM
@@ -4703,18 +4771,28 @@ if (authError) {
 
 function openStudentForm() {
 
-    document
-        .getElementById("studentModal")
-        .classList.add("show");
+    const studentModal =
+        document.getElementById("studentModal");
+
+    if (studentModal) {
+
+        studentModal.classList.add("show");
+
+    }
 
 }
 
 
 function closeStudentForm() {
 
-    document
-        .getElementById("studentModal")
-        .classList.remove("show");
+    const studentModal =
+        document.getElementById("studentModal");
+
+    if (studentModal) {
+
+        studentModal.classList.remove("show");
+
+    }
 
 }
 
@@ -4730,9 +4808,13 @@ async function openProjects() {
             "get_my_request_status"
         );
 
+
     if (error) {
 
-        console.error("Supabase error:", error);
+        console.error(
+            "Supabase error:",
+            error
+        );
 
         alert(
             currentLanguage === "fr"
@@ -4752,21 +4834,28 @@ async function openProjects() {
 
         document.getElementById("homePage").style.display = "none";
 
+
         document
             .querySelectorAll(".info-section")
             .forEach(section => {
+
                 section.style.display = "none";
+
             });
+
 
         const projectsPage =
             document.getElementById("projectsPage");
 
+
         projectsPage.classList.add("show");
+
 
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
+
 
         return;
     }
@@ -4802,7 +4891,9 @@ async function openProjects() {
 
         return;
     }
+
 }
+
 
 /* =====================================================
    HOME
@@ -4879,6 +4970,7 @@ function showSection(id) {
 
         section.style.display = "block";
 
+
         setTimeout(() => {
 
             section.scrollIntoView({
@@ -4900,6 +4992,9 @@ function renderProjects() {
 
     const grid =
         document.getElementById("projectsGrid");
+
+
+    if (!grid) return;
 
 
     grid.innerHTML = "";
@@ -4970,6 +5065,7 @@ function renderProjects() {
                 }
 
                 →
+
             </button>
 
         `;
@@ -4988,23 +5084,33 @@ function renderProjects() {
 
 function openProjectDetails(id) {
 
-    // 🔒 Vérification de l'autorisation
+    /* Vérification de l'autorisation */
+
     if (!projectsAuthorized) {
+
         showProjectWaitingMessage();
+
         return;
+
     }
 
-    const project = projects.find(p => p.id === id);
+
+    const project =
+        projects.find(
+            p => p.id === id
+        );
+
 
     if (!project) return;
 
-    const data = project[currentLanguage];
 
-    const details = document.getElementById("projectDetails");
+    const data =
+        project[currentLanguage];
 
-    // =====================================================
-    // TITRE + DESCRIPTION
-    // =====================================================
+
+    const details =
+        document.getElementById("projectDetails");
+
 
     details.innerHTML = `
 
@@ -5012,18 +5118,16 @@ function openProjectDetails(id) {
             ${project.icon}
         </div>
 
+
         <h1 class="detail-title">
             ${data.title}
         </h1>
+
 
         <p class="detail-description">
             ${data.description}
         </p>
 
-
-        <!-- =================================================
-             TAGS
-        ================================================== -->
 
         <div class="project-tags">
 
@@ -5043,9 +5147,7 @@ function openProjectDetails(id) {
         <div class="detail-columns">
 
 
-            <!-- =================================================
-                 MATÉRIEL
-            ================================================== -->
+            <!-- MATÉRIEL -->
 
             <div class="detail-box">
 
@@ -5072,9 +5174,7 @@ function openProjectDetails(id) {
             </div>
 
 
-            <!-- =================================================
-                 DÉTAIL DES COMPOSANTS
-            ================================================== -->
+            <!-- DÉTAIL DES COMPOSANTS -->
 
             ${
                 data.componentsDetails
@@ -5119,9 +5219,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 PRINCIPE DE FONCTIONNEMENT
-            ================================================== -->
+            <!-- PRINCIPE -->
 
             ${
                 data.principle
@@ -5148,9 +5246,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 MONTAGE MÉCANIQUE
-            ================================================== -->
+            <!-- MONTAGE MÉCANIQUE -->
 
             ${
                 data.mechanicalAssembly
@@ -5177,9 +5273,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 ASSEMBLAGE ÉLECTRIQUE
-            ================================================== -->
+            <!-- ASSEMBLAGE ÉLECTRIQUE -->
 
             ${
                 data.electricalAssembly
@@ -5206,9 +5300,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 CÂBLAGE
-            ================================================== -->
+            <!-- CÂBLAGE -->
 
             <div class="detail-box">
 
@@ -5227,9 +5319,7 @@ function openProjectDetails(id) {
             </div>
 
 
-            <!-- =================================================
-                 DÉTAIL DU CÂBLAGE
-            ================================================== -->
+            <!-- DÉTAIL CÂBLAGE -->
 
             ${
                 data.wiringDetails
@@ -5267,9 +5357,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 ALGORITHME
-            ================================================== -->
+            <!-- ALGORITHME -->
 
             ${
                 data.algorithm
@@ -5296,9 +5384,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 PROGRAMMATION
-            ================================================== -->
+            <!-- PROGRAMMATION -->
 
             ${
                 data.programming
@@ -5347,9 +5433,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 ÉTAPES
-            ================================================== -->
+            <!-- ÉTAPES -->
 
             <div class="detail-box">
 
@@ -5381,9 +5465,7 @@ function openProjectDetails(id) {
             </div>
 
 
-            <!-- =================================================
-                 TEST
-            ================================================== -->
+            <!-- TEST -->
 
             ${
                 data.testing
@@ -5410,9 +5492,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 CALIBRATION
-            ================================================== -->
+            <!-- CALIBRATION -->
 
             ${
                 data.calibration
@@ -5439,9 +5519,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 PROBLÈMES / SOLUTIONS
-            ================================================== -->
+            <!-- PROBLÈMES / SOLUTIONS -->
 
             ${
                 data.commonProblems
@@ -5486,9 +5564,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 SÉCURITÉ
-            ================================================== -->
+            <!-- SÉCURITÉ -->
 
             ${
                 data.safety
@@ -5515,9 +5591,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 AMÉLIORATIONS
-            ================================================== -->
+            <!-- AMÉLIORATIONS -->
 
             ${
                 data.improvements
@@ -5552,9 +5626,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 OBJECTIF PÉDAGOGIQUE
-            ================================================== -->
+            <!-- OBJECTIF PÉDAGOGIQUE -->
 
             ${
                 data.educational
@@ -5581,9 +5653,7 @@ function openProjectDetails(id) {
             }
 
 
-            <!-- =================================================
-                 CONCLUSION
-            ================================================== -->
+            <!-- CONCLUSION -->
 
             ${
                 data.conclusion
@@ -5608,110 +5678,116 @@ function openProjectDetails(id) {
                     `
                     : ""
             }
-<!-- =================================================
-     🤖 AI ASSISTANT
-================================================== -->
-
-<div class="project-ai-assistant">
-
-    <div class="project-ai-header">
-
-        <div class="project-ai-icon">
-            🤖
-        </div>
-
-        <div>
-
-            <h3>
-                ${
-                    currentLanguage === "fr"
-                        ? "Assistant IA du projet"
-                        : "مساعد الذكاء الاصطناعي للمشروع"
-                }
-            </h3>
-
-            <p class="project-ai-subtitle">
-                ${
-                    currentLanguage === "fr"
-                        ? "Posez vos questions sur ce projet."
-                        : "اطرح أسئلتك حول هذا المشروع."
-                }
-            </p>
-
-        </div>
-
-    </div>
 
 
-    <div class="project-ai-chat">
+            <!-- =================================================
+                 AI ASSISTANT
+            ================================================== -->
 
-        <div
-            id="projectAiMessages"
-            class="project-ai-messages"
-        >
+            <div class="project-ai-assistant">
 
-            <div class="project-ai-message ai">
+                <div class="project-ai-header">
 
-                ${
-                    currentLanguage === "fr"
-                        ? "👋 Bonjour ! Je suis votre assistant IA. Posez-moi une question sur ce projet."
-                        : "👋 مرحباً! أنا مساعد الذكاء الاصطناعي. اسألني عن أي شيء يتعلق بهذا المشروع."
-                }
+                    <div class="project-ai-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            ${
+                                currentLanguage === "fr"
+                                    ? "Assistant IA du projet"
+                                    : "مساعد الذكاء الاصطناعي للمشروع"
+                            }
+                        </h3>
+
+                        <p class="project-ai-subtitle">
+                            ${
+                                currentLanguage === "fr"
+                                    ? "Posez vos questions sur ce projet."
+                                    : "اطرح أسئلتك حول هذا المشروع."
+                            }
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="project-ai-chat">
+
+                    <div
+                        id="projectAiMessages"
+                        class="project-ai-messages"
+                    >
+
+                        <div class="project-ai-message ai">
+
+                            ${
+                                currentLanguage === "fr"
+                                    ? "👋 Bonjour ! Je suis votre assistant IA. Posez-moi une question sur ce projet."
+                                    : "👋 مرحباً! أنا مساعد الذكاء الاصطناعي. اسألني عن أي شيء يتعلق بهذا المشروع."
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="project-ai-input-area">
+
+                        <input
+                            id="projectAiInput"
+                            class="project-ai-input"
+                            type="text"
+                            placeholder="${
+                                currentLanguage === "fr"
+                                    ? "Posez votre question..."
+                                    : "اكتب سؤالك هنا..."
+                            }"
+                            onkeydown="
+                                if(event.key === 'Enter') {
+                                    askProjectAI();
+                                }
+                            "
+                        >
+
+
+                        <button
+                            id="projectAiSend"
+                            class="project-ai-send"
+                            onclick="askProjectAI()"
+                        >
+
+                            ${
+                                currentLanguage === "fr"
+                                    ? "🤖 Demander"
+                                    : "🤖 اسأل AI"
+                            }
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
-
-        <div class="project-ai-input-area">
-
-            <input
-                id="projectAiInput"
-                class="project-ai-input"
-                type="text"
-                placeholder="${
-                    currentLanguage === "fr"
-                        ? "Posez votre question..."
-                        : "اكتب سؤالك هنا..."
-                }"
-                onkeydown="
-                    if(event.key === 'Enter') {
-                        askProjectAI();
-                    }
-                "
-            >
-
-            <button
-                id="projectAiSend"
-                class="project-ai-send"
-                onclick="askProjectAI()"
-            >
-
-                ${
-                    currentLanguage === "fr"
-                        ? "🤖 Demander"
-                        : "🤖 اسأل AI"
-                }
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-        </div>
-
     `;
 
-currentAIProject = project;
-    // =====================================================
-    // OUVRIR LA FENÊTRE
-    // =====================================================
+
+    currentAIProject = project;
+
+
+    /* OUVRIR LA FENÊTRE */
 
     document
         .getElementById("projectModal")
         .classList.add("show");
+
 }
 
 
@@ -5731,6 +5807,7 @@ function closeProjectDetails() {
 function setLanguage(language) {
 
     currentLanguage = language;
+
 
     localStorage.setItem(
         "language",
@@ -5776,7 +5853,24 @@ function setLanguage(language) {
                     input.placeholder = "الاسم";
 
                 if (input.id === "contact")
-                    input.placeholder = "البريد الإلكتروني أو الهاتف";
+                    input.placeholder =
+                        "البريد الإلكتروني أو الهاتف";
+
+                if (input.id === "password")
+                    input.placeholder =
+                        "كلمة المرور";
+
+                if (input.id === "confirmPassword")
+                    input.placeholder =
+                        "تأكيد كلمة المرور";
+
+                if (input.id === "loginEmail")
+                    input.placeholder =
+                        "البريد الإلكتروني";
+
+                if (input.id === "loginPassword")
+                    input.placeholder =
+                        "كلمة المرور";
 
             } else {
 
@@ -5787,7 +5881,24 @@ function setLanguage(language) {
                     input.placeholder = "Votre prénom";
 
                 if (input.id === "contact")
-                    input.placeholder = "exemple@domain.com";
+                    input.placeholder =
+                        "exemple@domain.com";
+
+                if (input.id === "password")
+                    input.placeholder =
+                        "Votre mot de passe";
+
+                if (input.id === "confirmPassword")
+                    input.placeholder =
+                        "Confirmer votre mot de passe";
+
+                if (input.id === "loginEmail")
+                    input.placeholder =
+                        "exemple@domain.com";
+
+                if (input.id === "loginPassword")
+                    input.placeholder =
+                        "Votre mot de passe";
 
             }
 
@@ -5804,20 +5915,31 @@ function setLanguage(language) {
         });
 
 
-    document
-        .getElementById("frBtn")
-        .classList.toggle(
+    const frBtn =
+        document.getElementById("frBtn");
+
+    const arBtn =
+        document.getElementById("arBtn");
+
+
+    if (frBtn) {
+
+        frBtn.classList.toggle(
             "active",
             language === "fr"
         );
 
+    }
 
-    document
-        .getElementById("arBtn")
-        .classList.toggle(
+
+    if (arBtn) {
+
+        arBtn.classList.toggle(
             "active",
             language === "ar"
         );
+
+    }
 
 
     renderProjects();
@@ -5827,7 +5949,10 @@ function setLanguage(language) {
         document.getElementById("projectModal");
 
 
-    if (detailModal.classList.contains("show")) {
+    if (
+        detailModal &&
+        detailModal.classList.contains("show")
+    ) {
 
         closeProjectDetails();
 
@@ -5867,31 +5992,57 @@ document.addEventListener("click", function (event) {
     }
 
 });
+
+
+/* =====================================================
+   PROJECT WAITING MESSAGE
+===================================================== */
+
 function showProjectWaitingMessage() {
 
     const oldMessage =
-        document.querySelector(".project-waiting-message");
+        document.querySelector(
+            ".project-waiting-message"
+        );
 
-    if (oldMessage) oldMessage.remove();
 
-    const message = document.createElement("div");
+    if (oldMessage) {
 
-    message.className = "project-waiting-message";
+        oldMessage.remove();
+
+    }
+
+
+    const message =
+        document.createElement("div");
+
+
+    message.className =
+        "project-waiting-message";
+
 
     message.innerHTML = `
+
         <div class="project-waiting-box">
 
-            <div class="project-waiting-icon">⏳</div>
+            <div class="project-waiting-icon">
+                ⏳
+            </div>
+
 
             <h2>
+
                 ${
                     currentLanguage === "fr"
                         ? "Demande en attente"
                         : "طلبك قيد الانتظار"
                 }
+
             </h2>
 
+
             <p>
+
                 ${
                     currentLanguage === "fr"
                         ? `
@@ -5912,46 +6063,64 @@ function showProjectWaitingMessage() {
                             حتى تتم الموافقة على طلبك.
                           `
                 }
+
             </p>
+
 
             <button
                 class="project-waiting-check"
                 onclick="checkApprovalAgain()"
             >
+
                 ${
                     currentLanguage === "fr"
                         ? "🔄 Vérifier ma demande"
                         : "🔄 التحقق من حالة الطلب"
                 }
+
             </button>
+
 
             <button
                 class="project-waiting-close"
                 onclick="closeProjectWaitingMessage()"
             >
+
                 ${
                     currentLanguage === "fr"
                         ? "Fermer"
                         : "إغلاق"
                 }
+
             </button>
 
         </div>
+
     `;
 
+
     document.body.appendChild(message);
+
 }
 
 
 function closeProjectWaitingMessage() {
 
     const message =
-        document.querySelector(".project-waiting-message");
+        document.querySelector(
+            ".project-waiting-message"
+        );
+
 
     if (message) {
+
         message.remove();
+
     }
+
 }
+
+
 async function checkApprovalAgain() {
 
     const { data, error } =
@@ -5959,9 +6128,13 @@ async function checkApprovalAgain() {
             "get_my_request_status"
         );
 
+
     if (error) {
 
-        console.error("Supabase error:", error);
+        console.error(
+            "Supabase error:",
+            error
+        );
 
         alert(
             currentLanguage === "fr"
@@ -5970,7 +6143,9 @@ async function checkApprovalAgain() {
         );
 
         return;
+
     }
+
 
     if (data === "approved") {
 
@@ -5981,7 +6156,9 @@ async function checkApprovalAgain() {
         openProjects();
 
         return;
+
     }
+
 
     if (data === "rejected") {
 
@@ -5994,7 +6171,9 @@ async function checkApprovalAgain() {
         );
 
         return;
+
     }
+
 
     if (data === "pending") {
 
@@ -6007,15 +6186,21 @@ async function checkApprovalAgain() {
         );
 
         return;
+
     }
+
 
     if (data === "not_found") {
 
         openStudentForm();
 
         return;
+
     }
+
 }
+
+
 /* =====================================================
    LOGIN
 ===================================================== */
@@ -6024,276 +6209,400 @@ function openLoginForm() {
 
     closeStudentForm();
 
-    const loginModal = document.getElementById("loginModal");
+
+    const loginModal =
+        document.getElementById("loginModal");
+
 
     if (loginModal) {
+
         loginModal.classList.add("show");
+
     }
+
 }
 
 
 function closeLoginForm() {
 
-    const loginModal = document.getElementById("loginModal");
+    const loginModal =
+        document.getElementById("loginModal");
+
 
     if (loginModal) {
+
         loginModal.classList.remove("show");
+
     }
+
 }
 
 
-/* تسجيل الدخول */
+/* =====================================================
+   LOGIN FORM
+===================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const loginForm = document.getElementById("loginForm");
+    const loginForm =
+        document.getElementById("loginForm");
+
 
     if (!loginForm) return;
 
-    loginForm.addEventListener("submit", async function (event) {
 
-        event.preventDefault();
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
 
-        const email =
-            document.getElementById("loginEmail").value.trim();
+            event.preventDefault();
 
-        const password =
-            document.getElementById("loginPassword").value;
 
-        if (!email || !password) {
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    .value
+                    .trim();
 
-            alert(
-                currentLanguage === "fr"
-                    ? "Veuillez remplir tous les champs."
-                    : "يرجى تعمير جميع الخانات."
-            );
+
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    .value;
+
+
+            if (!email || !password) {
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Veuillez remplir tous les champs."
+                        : "يرجى تعمير جميع الخانات."
+                );
+
+                return;
+
+            }
+
+
+            /* Connexion Supabase */
+
+            const { data, error } =
+                await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+
+            /* Erreur */
+
+            if (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Email ou mot de passe incorrect."
+                        : "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+                );
+
+                return;
+
+            }
+
+
+            /* Vérifier le statut */
+
+            const {
+                data: status,
+                error: statusError
+            } =
+                await supabaseClient.rpc(
+                    "get_my_request_status"
+                );
+
+
+            if (statusError) {
+
+                console.error(
+                    "Status error:",
+                    statusError
+                );
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Erreur Supabase : " +
+                          statusError.message
+                        : "خطأ Supabase: " +
+                          statusError.message
+                );
+
+                return;
+
+            }
+
+
+            /* APPROVED */
+
+            if (status === "approved") {
+
+                projectsAuthorized = true;
+
+                closeLoginForm();
+
+                closeProjectWaitingMessage();
+
+                openProjects();
+
+                return;
+
+            }
+
+
+            /* PENDING */
+
+            if (status === "pending") {
+
+                projectsAuthorized = false;
+
+                closeLoginForm();
+
+                showProjectWaitingMessage();
+
+                return;
+
+            }
+
+
+            /* REJECTED */
+
+            if (status === "rejected") {
+
+                projectsAuthorized = false;
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Votre demande a été refusée."
+                        : "تم رفض طلبك."
+                );
+
+                return;
+
+            }
+
+
+            /* NOT FOUND */
+
+            if (status === "not_found") {
+
+                alert(
+                    currentLanguage === "fr"
+                        ? "Aucune demande étudiant n'est associée à ce compte."
+                        : "لا يوجد طلب طالب مرتبط بهذا الحساب."
+                );
+
+                return;
+
+            }
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   RESTORE LOGIN SESSION
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        const {
+            data: { session }
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if (!session) {
 
             return;
+
         }
 
 
-        /* Connexion Supabase */
-
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
+        console.log(
+            "Student session restored:",
+            session.user.email
+        );
 
 
-        /* Erreur de connexion */
+        /* Vérifier le statut */
 
-        if (error) {
-
-            console.error("Login error:", error);
-
-            alert(
-                currentLanguage === "fr"
-                    ? "Email ou mot de passe incorrect."
-                    : "البريد الإلكتروني أو كلمة المرور غير صحيحة."
-            );
-
-            return;
-        }
-
-
-        /* Vérifier la demande de l'étudiant */
-
-        const { data: status, error: statusError } =
+        const {
+            data: status,
+            error
+        } =
             await supabaseClient.rpc(
                 "get_my_request_status"
             );
 
 
-   if (statusError) {
+        if (error) {
 
-    console.error(
-        "Status error:",
-        statusError
-    );
+            console.error(
+                "Session status error:",
+                error
+            );
 
-    alert(
-        currentLanguage === "fr"
-            ? "Erreur Supabase : " + statusError.message
-            : "خطأ Supabase: " + statusError.message
-    );
+            return;
 
-    return;
-}
+        }
 
-
-        /* Demande approuvée */
 
         if (status === "approved") {
 
             projectsAuthorized = true;
 
-            closeLoginForm();
-
-            closeProjectWaitingMessage();
-
-            openProjects();
-
             return;
+
         }
 
-
-        /* Demande en attente */
 
         if (status === "pending") {
 
             projectsAuthorized = false;
 
-            closeLoginForm();
-
-            showProjectWaitingMessage();
-
             return;
+
         }
 
-
-        /* Demande refusée */
 
         if (status === "rejected") {
 
             projectsAuthorized = false;
 
-            alert(
-                currentLanguage === "fr"
-                    ? "Votre demande a été refusée."
-                    : "تم رفض طلبك."
-            );
-
             return;
+
         }
 
+    }
+);
 
-        /* Aucun formulaire trouvé */
 
-        if (status === "not_found") {
-
-            alert(
-                currentLanguage === "fr"
-                    ? "Aucune demande étudiant n'est associée à ce compte."
-                    : "لا يوجد طلب طالب مرتبط بهذا الحساب."
-            );
-
-            return;
-        }
-
-    });
-
-});
 /* =====================================================
-   RESTORE LOGIN SESSION
+   AI ASSISTANT
 ===================================================== */
 
-document.addEventListener("DOMContentLoaded", async function () {
-
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (!session) {
-        return;
-    }
-
-    console.log("Student session restored:", session.user.email);
-
-
-    /* Vérifier le statut de la demande */
-
-    const { data: status, error } =
-        await supabaseClient.rpc(
-            "get_my_request_status"
-        );
-
-    if (error) {
-        console.error(
-            "Session status error:",
-            error
-        );
-        return;
-    }
-
-
-    /* Autorisé */
-
-    if (status === "approved") {
-
-        projectsAuthorized = true;
-
-        return;
-    }
-
-
-    /* En attente */
-
-    if (status === "pending") {
-
-        projectsAuthorized = false;
-
-        return;
-    }
-
-
-    /* Refusé */
-
-    if (status === "rejected") {
-
-        projectsAuthorized = false;
-
-        return;
-    }
-
-});
 async function askProjectAI() {
 
-    const input = document.getElementById("projectAiInput");
-    const messages = document.getElementById("projectAiMessages");
-    const button = document.getElementById("projectAiSend");
+    const input =
+        document.getElementById(
+            "projectAiInput"
+        );
 
-    if (!input || !messages || !button) return;
 
-    const question = input.value.trim();
+    const messages =
+        document.getElementById(
+            "projectAiMessages"
+        );
 
-    if (!question) return;
+
+    const button =
+        document.getElementById(
+            "projectAiSend"
+        );
+
+
+    if (!input || !messages || !button) {
+
+        return;
+
+    }
+
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+
+        return;
+
+    }
+
 
     if (!currentAIProject) {
+
         alert(
             currentLanguage === "fr"
                 ? "Aucun projet sélectionné."
                 : "لم يتم اختيار أي مشروع."
         );
+
         return;
+
     }
 
-    // Message de l'étudiant
-    const userMessage = document.createElement("div");
-    userMessage.className = "project-ai-message user";
-    userMessage.textContent = question;
 
-    messages.appendChild(userMessage);
+    /* Message utilisateur */
+
+    const userMessage =
+        document.createElement("div");
+
+
+    userMessage.className =
+        "project-ai-message user";
+
+
+    userMessage.textContent =
+        question;
+
+
+    messages.appendChild(
+        userMessage
+    );
+
 
     input.value = "";
+
     button.disabled = true;
 
-    // Message de chargement
-    const loadingMessage = document.createElement("div");
+
+    /* Loading */
+
+    const loadingMessage =
+        document.createElement("div");
+
+
     loadingMessage.className =
         "project-ai-message ai project-ai-loading";
+
 
     loadingMessage.textContent =
         currentLanguage === "fr"
             ? "🤖 Réflexion..."
             : "🤖 جاري التفكير...";
 
-    messages.appendChild(loadingMessage);
-    messages.scrollTop = messages.scrollHeight;
+
+    messages.appendChild(
+        loadingMessage
+    );
+
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
 
     try {
 
-        const { data, error } =
+        const {
+            data,
+            error
+        } =
             await supabaseClient.functions.invoke(
                 "project-ai",
                 {
@@ -6307,65 +6616,69 @@ async function askProjectAI() {
                 }
             );
 
-        loadingMessage.remove();
-if (error) {
 
-    console.error("AI Function error:", error);
-    console.error("Error message:", error.message);
-    console.error("Error context:", error.context);
+        if (loadingMessage) {
 
-    let details = "";
+            loadingMessage.remove();
 
-    try {
-        if (error.context) {
-            details = await error.context.text();
         }
-    } catch (e) {
-        details = "Could not read error response.";
-    }
 
-    console.error("Server response:", details);
 
-    alert(
-        "AI ERROR\n\n" +
-        "Message: " + (error.message || "Unknown") +
-        "\n\nServer:\n" + details
-    );
+        if (error) {
 
-    loadingMessage.remove();
+            console.error(
+                "AI Function error:",
+                error
+            );
 
-    return;
-}if (error) {
 
-    console.error("AI Function error:", error);
-    console.error("Error message:", error.message);
-    console.error("Error context:", error.context);
+            let details = "";
 
-    let details = "";
 
-    try {
-        if (error.context) {
-            details = await error.context.text();
+            try {
+
+                if (error.context) {
+
+                    details =
+                        await error.context.text();
+
+                }
+
+            } catch (e) {
+
+                details =
+                    "Could not read error response.";
+
+            }
+
+
+            console.error(
+                "Server response:",
+                details
+            );
+
+
+            alert(
+                "AI ERROR\n\n" +
+                "Message: " +
+                (error.message || "Unknown") +
+                "\n\nServer:\n" +
+                details
+            );
+
+
+            return;
+
         }
-    } catch (e) {
-        details = "Could not read error response.";
-    }
 
-    console.error("Server response:", details);
 
-    alert(
-        "AI ERROR\n\n" +
-        "Message: " + (error.message || "Unknown") +
-        "\n\nServer:\n" + details
-    );
+        const aiMessage =
+            document.createElement("div");
 
-    loadingMessage.remove();
 
-    return;
-}
+        aiMessage.className =
+            "project-ai-message ai";
 
-        const aiMessage = document.createElement("div");
-        aiMessage.className = "project-ai-message ai";
 
         aiMessage.textContent =
             data?.answer ||
@@ -6375,29 +6688,54 @@ if (error) {
                     : "لم أتلقَّ إجابة."
             );
 
-        messages.appendChild(aiMessage);
 
-        messages.scrollTop = messages.scrollHeight;
+        messages.appendChild(
+            aiMessage
+        );
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
 
     } catch (error) {
 
-        console.error("AI error:", error);
+        console.error(
+            "AI error:",
+            error
+        );
 
-        loadingMessage.remove();
 
-        const aiMessage = document.createElement("div");
-        aiMessage.className = "project-ai-message ai";
+        if (loadingMessage) {
+
+            loadingMessage.remove();
+
+        }
+
+
+        const aiMessage =
+            document.createElement("div");
+
+
+        aiMessage.className =
+            "project-ai-message ai";
+
 
         aiMessage.textContent =
             currentLanguage === "fr"
                 ? "❌ Impossible de contacter l'IA."
                 : "❌ تعذر الاتصال بالذكاء الاصطناعي.";
 
-        messages.appendChild(aiMessage);
+
+        messages.appendChild(
+            aiMessage
+        );
+
 
     } finally {
 
         button.disabled = false;
 
     }
+
 }
