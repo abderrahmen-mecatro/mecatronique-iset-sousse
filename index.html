@@ -369,6 +369,7 @@
      STUDENT FORM
 ===================================================== -->
 
+<!-- STUDENT MODAL -->
 <div id="studentModal" class="modal">
 
     <div class="modal-box">
@@ -382,24 +383,23 @@
         </div>
 
         <h2
-    data-fr="Membres Club"
-    data-ar="أعضاء النادي">
-    Membres Club
-</h2>
+            data-fr="Membres Club"
+            data-ar="أعضاء النادي">
+            Membres Club
+        </h2>
 
-     <p
-    data-fr="Créez votre compte pour demander l'accès aux projets de Mécatronique. Votre compte sera vérifié avant l'accès."
-    data-ar="أنشئ حسابك لطلب الوصول إلى مشاريع الميكاترونيك. سيتم التحقق من حسابك قبل السماح بالدخول.">
-    Créez votre compte pour demander l'accès aux projets de Mécatronique. Votre compte sera vérifié avant l'accès.
-    </p>
-
+        <p
+            data-fr="Créez votre compte pour demander l'accès aux projets de Mécatronique. Votre compte sera vérifié avant l'accès."
+            data-ar="أنشئ حسابك لطلب الوصول إلى مشاريع الميكاترونيك. سيتم التحقق من حسابك قبل السماح بالدخول.">
+            Créez votre compte pour demander l'accès aux projets de Mécatronique. Votre compte sera vérifié avant l'accès.
+        </p>
 
         <form id="studentForm">
 
             <div class="form-grid">
 
+                <!-- NOM -->
                 <div class="form-group">
-
                     <label
                         data-fr="Nom"
                         data-ar="اللقب">
@@ -411,12 +411,10 @@
                         type="text"
                         placeholder="Votre nom"
                         required>
-
                 </div>
 
-
+                <!-- PRÉNOM -->
                 <div class="form-group">
-
                     <label
                         data-fr="Prénom"
                         data-ar="الاسم">
@@ -428,48 +426,59 @@
                         type="text"
                         placeholder="Votre prénom"
                         required>
-
                 </div>
 
-
+                <!-- EMAIL -->
                 <div class="form-group">
-
                     <label
-                        data-fr="Email ou téléphone"
-                        data-ar="البريد الإلكتروني أو الهاتف">
-                        Email ou téléphone
+                        data-fr="Email"
+                        data-ar="البريد الإلكتروني">
+                        Email
                     </label>
 
                     <input
                         id="contact"
-                        type="text"
+                        type="email"
                         placeholder="exemple@domain.com"
                         required>
-
                 </div>
 
-<div class="form-group">
-    <label for="password">Mot de passe</label>
+                <!-- MOT DE PASSE -->
+                <div class="form-group">
+                    <label
+                        for="password"
+                        data-fr="Mot de passe"
+                        data-ar="كلمة المرور">
+                        Mot de passe
+                    </label>
 
-    <input
-        type="password"
-        id="password"
-        placeholder="Votre mot de passe"
-        required
-    >
-</div>
-<div class="form-group">
-    <label for="confirmPassword">Confirmer votre mot de passe</label>
-    <input
-        type="password"
-        id="confirmPassword"
-        name="confirmPassword"
-        placeholder="Confirmer votre mot de passe"
-        required
-    >
-</div>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Votre mot de passe"
+                        required>
+                </div>
 
+                <!-- CONFIRMATION -->
+                <div class="form-group">
+                    <label
+                        for="confirmPassword"
+                        data-fr="Confirmer votre mot de passe"
+                        data-ar="تأكيد كلمة المرور">
+                        Confirmer votre mot de passe
+                    </label>
 
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirmer votre mot de passe"
+                        required>
+                </div>
+
+            </div>
+
+            <!-- SUBMIT -->
             <button class="submit-btn" type="submit">
 
                 ➜
@@ -481,31 +490,35 @@
                 </span>
 
             </button>
-<div style="text-align:center; margin-top:20px;">
-    <button
-        type="button"
-        onclick="openLoginForm()"
-        style="
-            background:none;
-            border:none;
-            color:#6ea8ff;
-            cursor:pointer;
-            font-size:15px;
-        "
-    >
-        <span data-fr="J'ai déjà un compte — Se connecter"
-              data-ar="لدي حساب بالفعل — تسجيل الدخول">
-            J'ai déjà un compte — Se connecter
-        </span>
-    </button>
-</div>
+
+            <!-- LOGIN LINK -->
+            <div style="text-align:center; margin-top:20px;">
+
+                <button
+                    type="button"
+                    onclick="openLoginForm()"
+                    style="
+                        background:none;
+                        border:none;
+                        color:#6ea8ff;
+                        cursor:pointer;
+                        font-size:15px;
+                    ">
+
+                    <span
+                        data-fr="J'ai déjà un compte — Se connecter"
+                        data-ar="لدي حساب بالفعل — تسجيل الدخول">
+                        J'ai déjà un compte — Se connecter
+                    </span>
+
+                </button>
+
+            </div>
 
         </form>
-<form id="studentForm">
-    ...
-</form>
 
-</div>
+    </div>
+
 </div>
 
 
@@ -514,9 +527,13 @@
 
     <div class="modal-box">
 
-        <button class="close-btn" onclick="closeLoginForm()">×</button>
+        <button class="close-btn" onclick="closeLoginForm()">
+            ×
+        </button>
 
-        <div class="modal-icon">🔐</div>
+        <div class="modal-icon">
+            🔐
+        </div>
 
         <h2
             data-fr="Connexion"
@@ -533,6 +550,7 @@
         <form id="loginForm">
 
             <div class="form-group">
+
                 <label
                     data-fr="Email"
                     data-ar="البريد الإلكتروني">
@@ -544,10 +562,13 @@
                     type="email"
                     placeholder="exemple@domain.com"
                     required>
+
             </div>
 
             <div class="form-group">
+
                 <label
+                    for="loginPassword"
                     data-fr="Mot de passe"
                     data-ar="كلمة المرور">
                     Mot de passe
@@ -558,94 +579,25 @@
                     type="password"
                     placeholder="Votre mot de passe"
                     required>
+
             </div>
 
-            <button class="submit-btn" type="submit">
+            <button
+                class="submit-btn"
+                type="submit">
+
                 🔓
+
                 <span
                     data-fr="Se connecter"
                     data-ar="تسجيل الدخول">
                     Se connecter
                 </span>
+
             </button>
 
         </form>
 
-    </div>
-
-</div><form id="studentForm">
-    ...
-</form>
-
-</div>
-</div>
-
-
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="modal">
-
-    <div class="modal-box">
-
-        <button class="close-btn" onclick="closeLoginForm()">×</button>
-
-        <div class="modal-icon">🔐</div>
-
-        <h2
-            data-fr="Connexion"
-            data-ar="تسجيل الدخول">
-            Connexion
-        </h2>
-
-        <p
-            data-fr="Connectez-vous à votre compte étudiant."
-            data-ar="قم بتسجيل الدخول إلى حسابك الطلابي.">
-            Connectez-vous à votre compte étudiant.
-        </p>
-
-        <form id="loginForm">
-
-            <div class="form-group">
-                <label
-                    data-fr="Email"
-                    data-ar="البريد الإلكتروني">
-                    Email
-                </label>
-
-                <input
-                    id="loginEmail"
-                    type="email"
-                    placeholder="exemple@domain.com"
-                    required>
-            </div>
-
-            <div class="form-group">
-                <label
-                    data-fr="Mot de passe"
-                    data-ar="كلمة المرور">
-                    Mot de passe
-                </label>
-
-                <input
-                    id="loginPassword"
-                    type="password"
-                    placeholder="Votre mot de passe"
-                    required>
-            </div>
-
-            <button class="submit-btn" type="submit">
-                🔓
-                <span
-                    data-fr="Se connecter"
-                    data-ar="تسجيل الدخول">
-                    Se connecter
-                </span>
-            </button>
-
-        </form>
-
-    </div>
-
-</div>
     </div>
 
 </div>
