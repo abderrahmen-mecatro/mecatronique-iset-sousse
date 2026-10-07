@@ -4271,3 +4271,25 @@ html[dir="rtl"] #projectDetails .component-item {
         margin-right: 0;
     }
 }
+/* Fix: afficher le texte Membres Club sur mobile */
+@media (max-width: 768px) {
+
+    .student-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 150px;
+        padding: 12px 18px;
+    }
+
+    .student-btn span {
+        display: inline-flex !important;
+    }
+
+    .student-btn span:last-child {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
